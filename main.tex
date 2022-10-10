@@ -121,11 +121,11 @@ Evaluation results with datasets demonstrate that, compared with state-of-the-ar
 %%% VLDB block end %%%
 
 \section{Introduction}
-Cloud Block Storage (CBS) is an important data storage technique in cloud computing, such as Amazon Elastic Block Store (EBS) \cite{varia2014overview}, Openstack Cinder \cite{shrivastwa2016openstack}, Sheepdog \cite{morita2010sheepdog} and Ceph RBD \cite{weil2006ceph,weil2007rados}. CBS usually partitions storage device into logical data blocks and treats them as objects that are ultimately stored in the storage cluster. Its advantage is to decouple the upper different storage interfaces from the lower storage devices. But the accessing overhead cannot be ignored because of the additional computational and network overhead in cloud environment.
+Cloud Block Storage (CBS) is an important data storage technique in cloud computing, such as Amazon Elastic Block Store (EBS) \cite{varia2014overview}, Openstack Cinder \cite{shrivastwa2016openstack}, Sheepdog \cite{morita2010sheepdog} and Ceph RBD \cite{weil2006ceph,weil2007rados}. CBS usually partitions storage devices into logical data blocks and treats them as objects that are ultimately stored in the storage cluster. Its advantage is to decouple the upper different storage interfaces from the lower storage devices. But the accessing overhead cannot be ignored because of the additional computational and network overhead in the cloud environment.
 
 Though CBS provides reliability and persistence, tenants still keep taking snapshots continuously, to store the state of the block device at various times for auditing, separating heavy business, and spatial data mining. In particular, the snapshot only stores data blocks that have been modified during the process of taking the snapshot, which could greatly decrease storage overhead. However, existing snapshot technologies have some open issues. For Copy-on-Write (CoW) \cite{nightingale2008rethink,chidambaram2013optimistic}, it introduces write amplification because new data writed to the data block are kept in place. But the old data block, which is now part of the snapshot, is explicitly copied to a new location. For Redirect-on-Write (RoW), the updated data blocks are scattered in the snapshots instead of the block device. So restoring a snapshot may access multiple snapshots, resulting in significant additional cost in the cloud.
 
-Once mounting a snapshot of the block device to the system, the users could access the database, and usually access snapshot set for the applications \cite{yang2011st,joseph2019securing,pekerskaya2006mining}, which was also verified by the snapshot set query of AliCloud \cite{alibackupset}. The tenant typically takes snapshots of the database periodically and loads the snapshot collection over time. The length of the snapshot set is determined by the query date. Besides, they may combine multiple snapshot sets for cross-querying.
+The user could access the database replicate once mounting a snapshot of the block device, and typically access the snapshot set for the applications \cite{yang2011st,joseph2019securing,pekerskaya2006mining}, which is also verified by the snapshot set query of AliCloud \cite{alibackupset}. The tenant typically takes snapshots of the database periodically and loads the snapshot collection over time. The length of the snapshot set is determined by the query date. Besides, they may combine multiple snapshot sets for cross-querying.
 In terms of RoW, many works tend to build data block indexes \cite{tsikoudis2020rid,tsikoudis2018rql,shrira2005snap} to accelerate the restoration process. They cache the mapping from data block numbers to physical block addresses, which helps achieve a higher access data block speed. However, fragmentation inevitably becomes worse with high generation snapshots, restoring the snapshot requires loading all the reference snapshots' indexes, which takes time. Amazon EBS snapshot \cite{AmazonEBSSnapshot} keeps all regions' (continuous unaltered data block area) positions to prevent snapshot dependency, but the space overhead for each snapshot cannot be overlooked.
 
 Based on the workload of the database and the snapshot access characters, we propose a simple but effective snapshot index structure based on RoW, which balances the overhead of recovery time and index memory consumption. The snapshot dependence chain is divided into groups, with each snapshot index relying son the previous snapshots in its group but not on snapshots outside the group. 
@@ -194,9 +194,9 @@ However, when the number of snapshots grows, the size of each region shrinks and
 
 Snapshot technology can be implemented at different layers. Table \ref{table:snapshot_layer}  shows the existing methods supported by varying layers.
 
-In the database layer, database administrators can choose mysqldump \cite{mysqldump} for logical backup and Percona Xtrabackup \cite{xtrabackup} for physical backup. A logical backup stores the queries executed by transactions, while the physical backup copies the raw data to storage. In the recovery process, the stored queries are re-executed, or backup data are copied to a database directory. However, recovery operations in the existing tools take a long time, since these recovery procedures involve a large amount of I/O operations induced by database queries. Xtrabackup does not perform transactions and only copies original data, and then it is faster than mysqldump in restoring process, but the overhead still cannot be ignored. 
+In the database layer, database administrators can choose mysqldump \cite{mysqldump} for logical backup and Percona Xtrabackup \cite{xtrabackup} for physical backup. A logical backup stores the queries executed by transactions, while a physical backup copies the raw data to storage. In the recovery process, the stored queries are re-executed, or backup data are copied to a database directory. However, recovery operations in the existing tools take a long time, since these recovery procedures involve a large amount of I/O operations induced by database queries. Xtrabackup does not perform transactions and only copies original data, and then it is faster than mysqldump in restoring process, but the overhead still cannot be ignored. 
 
-Snapshots techniques supported by file systems and the block layer can be adopted to the backup and recovery of database. Network Appliance NAS filers, the Sun ZFS filesystem \cite{rodeh2003zfs} and BTRFS \cite{rodeh2013btrfs} organize the file as a tree with data at the leaf level and meta-data maintained in internal nodes. Each snapshot consists of a separate tree, but the snapshot may share subtrees with other snapshots. When user produces a snapshot of volume, simply duplicates the root node of the original volume as new tree root node of the snapshot, and new tree root is pointed to the same children as original volume.  
+Snapshots techniques supported by file systems and the block layer can be adopted to the backup and recovery of a database. Network Appliance NAS filers, the Sun ZFS filesystem \cite{rodeh2003zfs} and BTRFS \cite{rodeh2013btrfs} organize the file as a tree with data at the leaf level and meta-data maintained in internal nodes. Each snapshot consists of a separate tree, but the snapshot may share subtrees with other snapshots. When the user produces a snapshot of the volume, simply duplicates the root node of the original volume as the new tree root node of the snapshot, and the new tree root is pointed to the same children as the original volume.  
 Though creating a snapshot is light, the overhead of first write to a block is heavy because the entire tree of meta-data nodes needs to be copied and linked to the root node of the snapshot. 
 LVM \cite{hasenstein2001logical} operates between the file system and the storage device and provides fast snapshot creation and restoration using CoW. However, the CoW approach negatively affects run-time performance since it performs redundant writes due to data copies.
 We adopt tree structure to organize its data blocks like Parallax \cite{DBLP:conf/eurosys/MeyerACLFHW08} and Ramdisk \cite{nielsen1999use} to support rapid creation of snapshots.
@@ -205,13 +205,9 @@ We adopt tree structure to organize its data blocks like Parallax \cite{DBLP:con
 \label{Characters}
 In this subsection, we present our key observations about the behaviors of accessing snapshots. The characters can be exploited to greatly help design an optimal snapshot index that accelerates snapshot restoring and reduces index memory overhead.
 
-As shown in Figure \ref{fig:retained_distribution}, we collect one-month snapshot information from AliCloud \cite{alibackupset}. There were 112 snapshots are preserved in the first two weeks, 192 snapshots in the third week, and 476 snapshots in the fourth week. Most of the snapshots saved in the last week, because the system periodically takes snapshots at a fine density and filters snapshots based on the importance and date, which means continuously deleting snapshot sets of different lengths rather than batch deletion. 
+As shown in Figure \ref{fig:retained_distribution}, we collect one-month snapshot information from AliCloud \cite{alibackupset}. There were 115210 snapshots are preserved in the first two weeks, 522086 snapshots in the third week, and 634767 snapshots in the fourth week. Most of the snapshots saved in the last two week, because the system periodically takes snapshots at a fine density and filters snapshots based on the importance and date, which means continuously deleting snapshot sets of different lengths rather than batch deletion. 
 Besides, earlier snapshots are easily deleted and merged.
-%the ratio of data written in most snapshots is lower than 10$\%$, which refers to the amount of data updated in the snapshot. 
-%The reason is that the system constantly takes snapshots and the database workload are light-write transactions.
-%We also count whether the snapshots are accessed and mark them as red dots.
-%The red dots are continuous into short line segments, which means that the snapshots accessed are almost continuous.
-We also count snapshot accessed distribution, as shown in Figure \ref{fig:accessed_distribution}. There are 2091 times snapshots accessed within the first day, which accounted for 83.4\% of the snapshots accessed throughout the month. Therefore, the features of snapshot accessed is temporal locality.
+We also count snapshot accessed distribution, as shown in Figure \ref{fig:accessed_distribution}. There are 2091 snapshots accessed within the first day, which accounted for 83.4\% of the snapshots accessed throughout the month. Therefore, the feature of snapshot accessed is temporal locality.
 
 %At the same time, snapshots are mostly recovered in a continuous manner. 
 
@@ -235,13 +231,13 @@ Existing RoW-based snapshot technologies suffer under continuous snapshot access
 %\vspace{-0.2cm}
 
 \begin{figure}[htbp]
-	\begin{minipage}[t]{0.45\linewidth}
+	\begin{minipage}[t]{0.48\linewidth}
 		\includegraphics[width=\linewidth]{figures/ceph_pic/ali_counter_workload.pdf} 
 		\caption{Snapshot retained distribution} 
 		\label{fig:retained_distribution}
 	\end{minipage}
 	\hfill%
-	\begin{minipage}[t]{0.45\linewidth}
+	\begin{minipage}[t]{0.48\linewidth}
 		\includegraphics[width=\linewidth]{figures/ceph_pic/ali_percentage_workload.pdf}
 		\caption{Snapshot accessed distribution}
 		\label{fig:accessed_distribution}
@@ -321,10 +317,10 @@ Data blocks shared with the snapshots can not be updated in place when write ope
 
 
 We show SSI with an example in Figure \ref{fig:snaptree} (a), when the user takes the snapshot \emph{S1}, \emph{S1} just copies the root node from the snapshot tree \emph{S0}, as the new root node namely \emph{R1}, and \emph{R1} points to the internal nodes \emph{I0} and \emph{I1}. 
-Figure \ref{fig:snaptree} (b) shows that block \emph{No.12}, whose address is recorded by the leaf node \emph{L0}, is updated in the snapshot period. Firstly, \emph{S1} creates a new leaf node \emph{L6} and stores the address of the new block, then checks whether the path from the root node \emph{R1} to the target leaf node \emph{L6} is complete. If not, \emph{S1} copies all internal nodes from \emph{R1} to \emph{L0}, and then changes the pointers to redirect to those new nodes. The root node \emph{R1} points to internal node \emph{I0} then changes to point to new internal node \emph{I2}, and \emph{I2} redirects to leaf node \emph{L6} instead of \emph{L0}. In the same way, the root node \emph{R2} points to internal nodes \emph{I1} and \emph{I2} when taking the \emph{S2} snapshot.
+Figure \ref{fig:snaptree} (b) shows that block \emph{No.12}, whose address is recorded by the leaf node \emph{L0}, is updated in the snapshot period. Firstly, \emph{S1} creates a new leaf node \emph{L6} and stores the address of the new block, then checks whether the path from the root node \emph{R1} to the target leaf node \emph{L6} is complete. If not, \emph{S1} copies all internal nodes from \emph{R1} to \emph{L0}, and then changes the pointers to redirect to those new nodes. The root node \emph{R1} points to internal node \emph{I0} and changes to point to new internal node \emph{I2}, then \emph{I2} redirects to leaf node \emph{L6} instead of \emph{L0}. In the same way, the root node \emph{R2} points to internal nodes \emph{I1} and \emph{I2} when taking the \emph{S2} snapshot.
 
-There are two advantages of the shared subtree structure. Firstly, the memory footprint occupied by the tree is proportional to the number of updated data blocks in this snapshot, which means the memory footprint is small because most snapshots are not updated frequently as mentioned in Section \ref{Characters} and the index redundancy is reduced by only saving one copy of the address. Secondly, 
-the subtree sharing among snapshots makes locating the leaf nodes on any snaptree in a constant time. The reason is that the number of hops to locate a leaf node is the same as the height of the tree.
+There are two advantages of the shared subtree structure. Firstly, the memory footprint occupied by the tree is proportional to the number of updated data blocks in this snapshot, which means the memory footprint is small because most snapshots are not updated frequently as mentioned in Section \ref{Characters} and the index redundancy is reduced by only saving one copy of the address. 
+Secondly, the subtree sharing among snapshots makes locating the leaf nodes on any snaptree in a constant time. The reason is that the number of hops to locate a leaf node is the same as the height of the tree.
 
 \subsection{Group-Based Dividing}
 \label{GBD}
@@ -668,7 +664,7 @@ In this subsection we discuss the impact of snapshot group length on snapshot re
 	\caption{The benefit to restore a single snapshot group}
 	\label{fig:grouplength}
 \end{figure}
-\vspace{-0.3cm}
+
 
 As shown in Figure \ref{fig:grouplength}, GSnap cuts off snapshot references and shares child nodes within the group, which makes its revenue higher than both T-index and O-index. Because of the snapshot dependency, T-index loads its dependent snapshot indexes when restoring the snapshot collection, and in fact, the memory usage of the group is related to the length of the dependency chain. The performance of O-index degrades as the length of the snapshot set increases, because each index is a complete snapshot tree. GSnap has the largest profit when the snapshot group length is 12, which is close to the optimal value in the theoretical analysis. As the snapshot length increases, the number of snapshots that need to be loaded and the index memory increase, resulting in lower benefits, but higher than other indexes.
 
