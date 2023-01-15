@@ -1,0 +1,701 @@
+
+% Journals
+
+% First the Full Name is given, then the abbreviation used in the AMS Math
+% Reviews, with an indication if it could not be found there.
+% Note the 2nd overwrites the 1st, so swap them if you want the full name.
+
+ %{AMS}
+ @String{AMSTrans = "American Mathematical Society Translations" }
+ @String{AMSTrans = "Amer. Math. Soc. Transl." }
+ @String{BullAMS = "Bulletin of the American Mathematical Society" }
+ @String{BullAMS = "Bull. Amer. Math. Soc." }
+ @String{ProcAMS = "Proceedings of the American Mathematical Society" }
+ @String{ProcAMS = "Proc. Amer. Math. Soc." }
+ @String{TransAMS = "Transactions of the American Mathematical Society" }
+ @String{TransAMS = "Trans. Amer. Math. Soc." }
+
+ %ACM
+ @String{CACM = "Communications of the {ACM}" }
+ @String{CACM = "Commun. {ACM}" }
+ @String{CompServ = "Comput. Surveys" }
+ @String{JACM = "J. ACM" }
+ @String{ACMMathSoft = "{ACM} Transactions on Mathematical Software" }
+ @String{ACMMathSoft = "{ACM} Trans. Math. Software" }
+ @String{SIGNUM = "{ACM} {SIGNUM} Newsletter" }
+ @String{SIGNUM = "{ACM} {SIGNUM} Newslett." }
+
+ @String{AmerSocio = "American Journal of Sociology" }
+ @String{AmerStatAssoc = "Journal of the American Statistical Association" }
+ @String{AmerStatAssoc = "J. Amer. Statist. Assoc." }
+ @String{ApplMathComp = "Applied Mathematics and Computation" }
+ @String{ApplMathComp = "Appl. Math. Comput." }
+ @String{AmerMathMonthly = "American Mathematical Monthly" }
+ @String{AmerMathMonthly = "Amer. Math. Monthly" }
+ @String{BIT = "{BIT}" }
+ @String{BritStatPsych = "British Journal of Mathematical and Statistical
+          Psychology" }
+ @String{BritStatPsych = "Brit. J. Math. Statist. Psych." }
+ @String{CanMathBull = "Canadian Mathematical Bulletin" }
+ @String{CanMathBull = "Canad. Math. Bull." }
+ @String{CompApplMath = "Journal of Computational and Applied Mathematics" }
+ @String{CompApplMath = "J. Comput. Appl. Math." }
+ @String{CompPhys = "Journal of Computational Physics" }
+ @String{CompPhys = "J. Comput. Phys." }
+ @String{CompStruct = "Computers and Structures" }
+ @String{CompStruct = "Comput. \& Structures" }
+ @String{CompJour = "The Computer Journal" }
+ @String{CompJour = "Comput. J." }
+ @String{CompSysSci = "Journal of Computer and System Sciences" }
+ @String{CompSysSci = "J. Comput. System Sci." }
+ @String{Computing = "Computing" }
+ @String{ContempMath = "Contemporary Mathematics" }
+ @String{ContempMath = "Contemp. Math." }
+ @String{Crelle = "Crelle's Journal" }
+ @String{GiornaleMath = "Giornale di Mathematiche" }
+ @String{GiornaleMath = "Giorn. Mat." } % didn't find in AMS MR., ibid.
+
+ %IEEE
+ @String{Computer = "{IEEE} Computer" }
+ @String{IEEETransComp = "{IEEE} Transactions on Computers" }
+ @String{IEEETransComp = "{IEEE} Trans. Comput." }
+ @String{IEEETransAC = "{IEEE} Transactions on Automatic Control" }
+ @String{IEEETransAC = "{IEEE} Trans. Automat. Control" }
+ @String{IEEESpec = "{IEEE} Spectrum" } % didn't find in AMS MR
+ @String{ProcIEEE = "Proceedings of the {IEEE}" }
+ @String{ProcIEEE = "Proc. {IEEE}" } % didn't find in AMS MR
+ @String{IEEETransAeroElec = "{IEEE} Transactions on Aerospace and Electronic
+     Systems" }
+ @String{IEEETransAeroElec = "{IEEE} Trans. Aerospace Electron. Systems" }
+
+ @String{IMANumerAna = "{IMA} Journal of Numerical Analysis" }
+ @String{IMANumerAna = "{IMA} J. Numer. Anal." }
+ @String{InfProcLet = "Information Processing Letters" }
+ @String{InfProcLet = "Inform. Process. Lett." }
+ @String{InstMathApp = "Journal of the Institute of Mathematics and
+     its Applications" }
+ @String{InstMathApp = "J. Inst. Math. Appl." }
+ @String{IntControl = "International Journal of Control" }
+ @String{IntControl = "Internat. J. Control" }
+ @String{IntNumerEng = "International Journal for Numerical Methods in
+     Engineering" }
+ @String{IntNumerEng = "Internat. J. Numer. Methods Engrg." }
+ @String{IntSuper = "International Journal of Supercomputing Applications" }
+ @String{IntSuper = "Internat. J. Supercomputing Applic." } % didn't find
+%% in AMS MR
+ @String{Kibernetika = "Kibernetika" }
+ @String{JResNatBurStand = "Journal of Research of the National Bureau
+     of Standards" }
+ @String{JResNatBurStand = "J. Res. Nat. Bur. Standards" }
+ @String{LinAlgApp = "Linear Algebra and its Applications" }
+ @String{LinAlgApp = "Linear Algebra Appl." }
+ @String{MathAnaAppl = "Journal of Mathematical Analysis and Applications" }
+ @String{MathAnaAppl = "J. Math. Anal. Appl." }
+ @String{MathAnnalen = "Mathematische Annalen" }
+ @String{MathAnnalen = "Math. Ann." }
+ @String{MathPhys = "Journal of Mathematical Physics" }
+ @String{MathPhys = "J. Math. Phys." }
+ @String{MathComp = "Mathematics of Computation" }
+ @String{MathComp = "Math. Comp." }
+ @String{MathScand = "Mathematica Scandinavica" }
+ @String{MathScand = "Math. Scand." }
+ @String{TablesAidsComp = "Mathematical Tables and Other Aids to Computation" }
+ @String{TablesAidsComp = "Math. Tables Aids Comput." }
+ @String{NumerMath = "Numerische Mathematik" }
+ @String{NumerMath = "Numer. Math." }
+ @String{PacificMath = "Pacific Journal of Mathematics" }
+ @String{PacificMath = "Pacific J. Math." }
+ @String{ParDistComp = "Journal of Parallel and Distributed Computing" }
+ @String{ParDistComp = "J. Parallel and Distrib. Comput." } % didn't find
+%% in AMS MR
+ @String{ParComputing = "Parallel Computing" }
+ @String{ParComputing = "Parallel Comput." }
+ @String{PhilMag = "Philosophical Magazine" }
+ @String{PhilMag = "Philos. Mag." }
+ @String{ProcNAS = "Proceedings of the National Academy of Sciences
+                    of the USA" }
+ @String{ProcNAS = "Proc. Nat. Acad. Sci. U. S. A." }
+ @String{Psychometrika = "Psychometrika" }
+ @String{QuartMath = "Quarterly Journal of Mathematics, Oxford, Series (2)" }
+ @String{QuartMath = "Quart. J. Math. Oxford Ser. (2)" }
+ @String{QuartApplMath = "Quarterly of Applied Mathematics" }
+ @String{QuartApplMath = "Quart. Appl. Math." }
+ @String{RevueInstStat = "Review of the International Statisical Institute" }
+ @String{RevueInstStat = "Rev. Inst. Internat. Statist." }
+
+ %SIAM
+ @String{JSIAM = "Journal of the Society for Industrial and Applied
+     Mathematics" }
+ @String{JSIAM = "J. Soc. Indust. Appl. Math." }
+ @String{JSIAMB = "Journal of the Society for Industrial and Applied
+     Mathematics, Series B, Numerical Analysis" }
+ @String{JSIAMB = "J. Soc. Indust. Appl. Math. Ser. B Numer. Anal." }
+ @String{SIAMAlgMeth = "{SIAM} Journal on Algebraic and Discrete Methods" }
+ @String{SIAMAlgMeth = "{SIAM} J. Algebraic Discrete Methods" }
+ @String{SIAMAppMath = "{SIAM} Journal on Applied Mathematics" }
+ @String{SIAMAppMath = "{SIAM} J. Appl. Math." }
+ @String{SIAMComp = "{SIAM} Journal on Computing" }
+ @String{SIAMComp = "{SIAM} J. Comput." }
+ @String{SIAMMatrix = "{SIAM} Journal on Matrix Analysis and Applications" }
+ @String{SIAMMatrix = "{SIAM} J. Matrix Anal. Appl." }
+ @String{SIAMNumAnal = "{SIAM} Journal on Numerical Analysis" }
+ @String{SIAMNumAnal = "{SIAM} J. Numer. Anal." }
+ @String{SIAMReview = "{SIAM} Review" }
+ @String{SIAMReview = "{SIAM} Rev." }
+ @String{SIAMSciStat = "{SIAM} Journal on Scientific and Statistical
+     Computing" }
+ @String{SIAMSciStat = "{SIAM} J. Sci. Statist. Comput." }
+
+ @String{SoftPracExp = "Software Practice and Experience" }
+ @String{SoftPracExp = "Software Prac. Experience" } % didn't find in AMS MR
+ @String{StatScience = "Statistical Science" }
+ @String{StatScience = "Statist. Sci." }
+ @String{Techno = "Technometrics" }
+ @String{USSRCompMathPhys = "{USSR} Computational Mathematics and Mathematical
+     Physics" }
+ @String{USSRCompMathPhys = "{U. S. S. R.} Comput. Math. and Math. Phys." }
+ @String{VLSICompSys = "Journal of {VLSI} and Computer Systems" }
+ @String{VLSICompSys = "J. {VLSI} Comput. Syst." }
+ @String{ZAngewMathMech = "Zeitschrift fur Angewandte Mathematik und
+     Mechanik" }
+ @String{ZAngewMathMech = "Z. Angew. Math. Mech." }
+ @String{ZAngewMathPhys = "Zeitschrift fur Angewandte Mathematik und Physik" }
+ @String{ZAngewMathPhys = "Z. Angew. Math. Phys." }
+
+% Publishers % ================================================= |
+
+ @String{Academic = "Academic Press" }
+ @String{ACMPress = "{ACM} Press" }
+ @String{AdamHilger = "Adam Hilger" }
+ @String{AddisonWesley = "Addison-Wesley" }
+ @String{AllynBacon = "Allyn and Bacon" }
+ @String{AMS = "American Mathematical Society" }
+ @String{Birkhauser = "Birkha{\"u}ser" }
+ @String{CambridgePress = "Cambridge University Press" }
+ @String{Chelsea = "Chelsea" }
+ @String{ClaredonPress = "Claredon Press" }
+ @String{DoverPub = "Dover Publications" }
+ @String{Eyolles = "Eyolles" }
+ @String{HoltRinehartWinston = "Holt, Rinehart and Winston" }
+ @String{Interscience = "Interscience" }
+ @String{JohnsHopkinsPress = "The Johns Hopkins University Press" }
+ @String{JohnWileySons = "John Wiley and Sons" }
+ @String{Macmillan = "Macmillan" }
+ @String{MathWorks = "The Math Works Inc." }
+ @String{McGrawHill = "McGraw-Hill" }
+ @String{NatBurStd = "National Bureau of Standards" }
+ @String{NorthHolland = "North-Holland" }
+ @String{OxfordPress = "Oxford University Press" }  %address Oxford or London?
+ @String{PergamonPress = "Pergamon Press" }
+ @String{PlenumPress = "Plenum Press" }
+ @String{PrenticeHall = "Prentice-Hall" }
+ @String{SIAMPub = "{SIAM} Publications" }
+ @String{Springer = "Springer-Verlag" }
+ @String{TexasPress = "University of Texas Press" }
+ @String{VanNostrand = "Van Nostrand" }
+ @String{WHFreeman = "W. H. Freeman and Co." }
+
+%Entries
+
+@inproceedings{zhou2018lea,
+	title={Lea: A lazy eviction algorithm for ssd cache in cloud block storage},
+	author={Zhou, Ke and Zhang, Yu and Huang, Ping and Wang, Hua and Ji, Yongguang and Cheng, Bin and Liu, Ying},
+	booktitle={2018 IEEE 36th International Conference on Computer Design (ICCD)},
+	pages={569--572},
+	year={2018},
+	organization={IEEE}
+}
+@article{jin2019reasoning,
+	title={Reasoning about Block-based Cloud Storage Systems},
+	author={Jin, Zhao and Wang, Hanpin and Zhang, Lei and Zhang, Bowen and Gao, Kun and Cao, Yongzhi},
+	journal={arXiv preprint arXiv:1904.04442},
+	year={2019}
+}
+@article{morita2010sheepdog,
+	title={Sheepdog: Distributed storage system for qemu/kvm},
+	author={Morita, Kazutaka},
+	journal={LCA 2010 DS\&R miniconf},
+	year={2010}
+}
+
+@inproceedings{weil2006ceph,
+	title={Ceph: A scalable, high-performance distributed file system},
+	author={Weil, Sage A and Brandt, Scott A and Miller, Ethan L and Long, Darrell DE and Maltzahn, Carlos},
+	booktitle={Proceedings of the 7th symposium on Operating systems design and implementation},
+	pages={307--320},
+	year={2006}
+}
+
+@inproceedings{weil2007rados,
+	title={Rados: a scalable, reliable storage service for petabyte-scale storage clusters},
+	author={Weil, Sage A and Leung, Andrew W and Brandt, Scott A and Maltzahn, Carlos},
+	booktitle={Proceedings of the 2nd international workshop on Petascale data storage: held in conjunction with Supercomputing'07},
+	pages={35--44},
+	year={2007}
+}
+@book{shrivastwa2016openstack,
+	title={OpenStack: Building a Cloud Environment},
+	author={Shrivastwa, Alok and Sarat, Sunil and Jackson, Kevin and Bunch, Cody and Sigler, Egle and Campbell, Tony},
+	year={2016},
+	publisher={Packt Publishing Ltd}
+}
+
+@article{varia2014overview,
+	title={Overview of amazon web services},
+	author={Varia, Jinesh and Mathew, Sajee},
+	journal={Amazon Web Services},
+	volume={105},
+	year={2014}
+}
+
+
+@inproceedings{liang2005swapping,
+	title={Swapping to remote memory over infiniband: An approach using a high performance network block device},
+	author={Liang, Shuang and Noronha, Ranjit and Panda, Dhabaleswar K},
+	booktitle={2005 IEEE International Conference on Cluster Computing},
+	pages={1--10},
+	year={2005},
+	organization={IEEE}
+}
+
+@misc{machek1997network,
+	title={Network block device (tcp version)},
+	author={Machek, P},
+	year={1997}
+}
+@inproceedings{tsikoudis2020rid,
+	title={RID: Deduplicating Snapshot Computations},
+	author={Tsikoudis, Nikos and Shrira, Liuba},
+	booktitle={Proceedings of the 2020 ACM SIGMOD International Conference on Management of Data},
+	pages={2087--2101},
+	year={2020}
+}
+@inproceedings{tsikoudis2018rql,
+	title={RQL: Retrospective Computations over Snapshot Sets.},
+	author={Tsikoudis, Nikos and Shrira, Liuba and Cohen, Sara},
+	booktitle={EDBT},
+	pages={600--611},
+	year={2018}
+}
+
+@inproceedings{zhang2020osca,
+	title={OSCA: An online-model based cache allocation scheme in cloud block storage systems},
+	author={Zhang, Yu and Huang, Ping and Zhou, Ke and Wang, Hua and Hu, Jianying and Ji, Yongguang and Cheng, Bin},
+	booktitle={2020 USENIX Annual Technical Conference (USENIX ATC 20)},
+	pages={785--798},
+	year={2020}
+}
+
+@inproceedings{subramanian2014snapshots,
+	title={Snapshots in a Flash with ioSnap},
+	author={Subramanian, Sriram and Sundararaman, Swaminathan and Talagala, Nisha and Arpaci-Dusseau, Andrea C and Arpaci-Dusseau, Remzi H},
+	booktitle={Proceedings of the Ninth European Conference on Computer Systems},
+	pages={1--14},
+	year={2014}
+}
+
+@inproceedings{hitz1994file,
+	title={File System Design for an NFS File Server Appliance.},
+	author={Hitz, Dave and Lau, James and Malcolm, Michael A},
+	booktitle={USENIX winter},
+	volume={94},
+	year={1994}
+}
+
+@article{konishi2006linux,
+	title={The Linux implementation of a log-structured file system},
+	author={Konishi, Ryusuke and Amagai, Yoshiji and Sato, Koji and Hifumi, Hisashi and Kihara, Seiji and Moriai, Satoshi},
+	journal={ACM SIGOPS Operating Systems Review},
+	volume={40},
+	number={3},
+	pages={102--107},
+	year={2006},
+	publisher={ACM New York, NY, USA}
+}
+
+@article{peterson2005ext3cow,
+	title={Ext3cow: A time-shifting file system for regulatory compliance},
+	author={Peterson, Zachary and Burns, Randal},
+	journal={ACM Transactions on Storage (TOS)},
+	volume={1},
+	number={2},
+	pages={190--212},
+	year={2005},
+	publisher={ACM New York, NY, USA}
+}
+
+@inproceedings{chen2016mitigating,
+	title={Mitigating sync amplification for copy-on-write virtual disk},
+	author={Chen, Qingshu and Liang, Liang and Xia, Yubin and Chen, Haibo},
+	booktitle={14th $\{$USENIX$\}$ Conference on File and Storage Technologies ($\{$FAST$\}$ 16)},
+	pages={241--247},
+	year={2016}
+}
+
+@inproceedings{li2012irow,
+	title={irow: An efficient live snapshot system for virtual machine disk},
+	author={Li, Jianxin and Liu, Hanqing and Cui, Lei and Li, Bo and Wo, Tianyu},
+	booktitle={2012 IEEE 18th International Conference on Parallel and Distributed Systems},
+	pages={376--383},
+	year={2012},
+	organization={IEEE}
+}
+
+@article{xiao2008case,
+	title={A case for continuous data protection at block level in disk array storages},
+	author={Xiao, Weijun and Ren, Jin and Yang, Qing},
+	journal={IEEE Transactions on Parallel and Distributed Systems},
+	volume={20},
+	number={6},
+	pages={898--911},
+	year={2008},
+	publisher={IEEE}
+}
+
+@inproceedings{laden2007architectures,
+	title={Architectures for Controller Based CDP.},
+	author={Laden, Guy and Ta-Shma, Paula and Yaffe, Eitan and Factor, Michael and Fienblit, Shachar},
+	booktitle={FAST},
+	volume={7},
+	pages={21--36},
+	year={2007}
+}
+
+@article{van2015massive,
+	title={Massive point cloud data management: Design, implementation and execution of a point cloud benchmark},
+	author={van Oosterom, Peter and Martinez-Rubi, Oscar and Ivanova, Milena and Horhammer, Mike and Geringer, Daniel and Ravada, Siva and Tijssen, Theo and Kodde, Martin and Gon{\c{c}}alves, Romulo},
+	journal={Computers \& Graphics},
+	volume={49},
+	pages={92--125},
+	year={2015},
+	publisher={Elsevier}
+}
+@book{zhao2014cloud,
+	title={Cloud data management},
+	author={Zhao, Liang and Sakr, Sherif and Liu, Anna and Bouguettaya, Athman},
+	year={2014},
+	publisher={Springer}
+}
+
+@article{nightingale2008rethink,
+	title={Rethink the sync},
+	author={Nightingale, Edmund B and Veeraraghavan, Kaushik and Chen, Peter M and Flinn, Jason},
+	journal={ACM Transactions on Computer Systems (TOCS)},
+	volume={26},
+	number={3},
+	pages={1--26},
+	year={2008},
+	publisher={ACM New York, NY, USA}
+}
+
+@inproceedings{chidambaram2013optimistic,
+	title={Optimistic crash consistency},
+	author={Chidambaram, Vijay and Pillai, Thanumalayan Sankaranarayana and Arpaci-Dusseau, Andrea C and Arpaci-Dusseau, Remzi H},
+	booktitle={Proceedings of the Twenty-Fourth ACM Symposium on Operating Systems Principles},
+	pages={228--243},
+	year={2013}
+}
+
+@inproceedings{shaull2008skippy,
+	title={Skippy: a new snapshot indexing method for time travel in the storage manager},
+	author={Shaull, Ross and Shrira, Liuba and Xu, Hao},
+	booktitle={Proceedings of the 2008 ACM SIGMOD international conference on Management of data},
+	pages={637--648},
+	year={2008}
+}
+
+@inproceedings{lee2017understanding,
+	title={Understanding write behaviors of storage backends in ceph object store},
+	author={Lee, Dong-Yun and Jeong, Kisik and Han, Sang-Hoon and Kim, Jin-Soo and Hwang, Joo-Young and Cho, Sangyeun},
+	booktitle={Proceedings of the 2017 IEEE International Conference on Massive Storage Systems and Technology},
+	volume={10},
+	year={2017}
+}
+
+@article{aghayev2020case,
+	title={The Case for Custom Storage Backends in Distributed Storage Systems},
+	author={Aghayev, Abutalib and Weil, Sage and Kuchnik, Michael and Nelson, Mark and Ganger, Gregory R and Amvrosiadis, George},
+	journal={ACM Transactions on Storage (TOS)},
+	volume={16},
+	number={2},
+	pages={1--31},
+	year={2020},
+	publisher={ACM New York, NY, USA}
+}
+
+@inproceedings{shrira2005snap,
+	title={Snap: Efficient snapshots for back-in-time execution},
+	author={Shrira, Liuba and Xu, Hao},
+	booktitle={21st International Conference on Data Engineering (ICDE'05)},
+	pages={434--445},
+	year={2005},
+	organization={IEEE}
+}
+
+@inproceedings{karger1997consistent,
+	title={Consistent hashing and random trees: Distributed caching protocols for relieving hot spots on the world wide web},
+	author={Karger, David and Lehman, Eric and Leighton, Tom and Panigrahy, Rina and Levine, Matthew and Lewin, Daniel},
+	booktitle={Proceedings of the twenty-ninth annual ACM symposium on Theory of computing},
+	pages={654--663},
+	year={1997}
+}
+@inproceedings{weil2006crush,
+	title={CRUSH: Controlled, scalable, decentralized placement of replicated data},
+	author={Weil, Sage A and Brandt, Scott A and Miller, Ethan L and Maltzahn, Carlos},
+	booktitle={SC'06: Proceedings of the 2006 ACM/IEEE Conference on Supercomputing},
+	pages={31--31},
+	year={2006},
+	organization={IEEE}
+}
+
+@inproceedings{rodeh2003zfs,
+	title={zFS-a scalable distributed file system using object disks},
+	author={Rodeh, Ohad and Teperman, Avi},
+	booktitle={20th IEEE/11th NASA Goddard Conference on Mass Storage Systems and Technologies, 2003.(MSST 2003). Proceedings.},
+	pages={207--218},
+	year={2003},
+	organization={IEEE}
+}
+
+@article{jo2019aggchecker,
+	title={Aggchecker: A fact-checking system for text summaries of relational data sets},
+	author={Jo, Saehan and Trummer, Immanuel and Yu, Weicheng and Wang, Xuezhi and Yu, Cong and Liu, Daniel and Mehta, Niyati},
+	journal={Proceedings of the VLDB Endowment},
+	volume={12},
+	number={12},
+	pages={1938--1941},
+	year={2019},
+	publisher={VLDB Endowment}
+}
+@Misc{ring,
+	author={Swifts documentation},
+	howpublished={In http://docs.openstack.org/developer/swift/}
+	
+}
+
+@article{pekerskaya2006mining,
+	title={Mining changing regions from access-constrained snapshots: a cluster-embedded decision tree approach},
+	author={Pekerskaya, Irene and Pei, Jian and Wang, Ke},
+	journal={Journal of Intelligent Information Systems},
+	volume={27},
+	number={3},
+	pages={215--242},
+	year={2006},
+	publisher={Springer}
+}
+
+@article{joseph2019securing,
+	title={Securing and Self recovery of Virtual Machines in cloud with an Autonomic Approach using Snapshots},
+	author={Joseph, Linda and Mukesh, Rajeswari},
+	journal={Mobile Networks and Applications},
+	volume={24},
+	number={4},
+	pages={1240--1248},
+	year={2019},
+	publisher={Springer}
+}
+
+@article{yang2011st,
+	title={ST-CDP: Snapshots in TRAP for continuous data protection},
+	author={Yang, Jing and Cao, Qiang and Li, Xu and Xie, Changsheng and Yang, Qing},
+	journal={IEEE Transactions on Computers},
+	volume={61},
+	number={6},
+	pages={753--766},
+	year={2011},
+	publisher={IEEE}
+}
+@inproceedings{almulla2013distributed,
+	title={A distributed snapshot framework for digital forensics evidence extraction and event reconstruction from cloud environment},
+	author={Almulla, Sameera and Iraqi, Youssef and Jones, Andrew},
+	booktitle={2013 IEEE 5th International Conference on Cloud Computing Technology and Science},
+	volume={1},
+	pages={699--704},
+	year={2013},
+	organization={IEEE}
+}
+
+@inproceedings{mahipal2021virtual,
+	title={Virtual Machine Security Problems and Countermeasures for Improving Quality of Service in Cloud Computing},
+	author={Mahipal, S and Sharmila, V Ceronmani},
+	booktitle={2021 International Conference on Artificial Intelligence and Smart Systems (ICAIS)},
+	pages={1319--1324},
+	year={2021},
+	organization={IEEE}
+}
+
+@article{garimella2006understanding,
+	title={Understanding and exploiting snapshot technology for data protection, Part 1: Snapshot technology overview},
+	author={Garimella, Neeta},
+	journal={IBM developerWorks, Apr},
+	volume={26},
+	pages={1--7},
+	year={2006}
+}
+@article{vrable2009cumulus,
+	title={Cumulus: Filesystem backup to the cloud},
+	author={Vrable, Michael and Savage, Stefan and Voelker, Geoffrey M},
+	journal={ACM Transactions on Storage (TOS)},
+	volume={5},
+	number={4},
+	pages={1--28},
+	year={2009},
+	publisher={ACM New York, NY, USA}
+}
+@inproceedings{ren2021accelerating,
+	title={Accelerating Encrypted Deduplication via $\{$SGX$\}$},
+	author={Ren, Yanjing and Li, Jingwei and Yang, Zuoru and Lee, Patrick PC and Zhang, Xiaosong},
+	booktitle={2021 $\{$USENIX$\}$ Annual Technical Conference (USENIX ATC 21)},
+	pages={957--971},
+	year={2021}
+}
+@inproceedings{zou2021dilemma,
+	title={The Dilemma between Deduplication and Locality: Can Both be Achieved?},
+	author={Zou, Xiangyu and Yuan, Jingsong and Shilane, Philip and Xia, Wen and Zhang, Haijun and Wang, Xuan},
+	booktitle={19th $\{$USENIX$\}$ Conference on File and Storage Technologies ($\{$FAST$\}$ 21)},
+	pages={171--185},
+	year={2021}
+}
+@misc{mysqldump,
+	title={Mysqldump},
+	howpublished={\url{http://dev.mysql.com/doc/refman/5.6/en/mysqldump.html.}}
+}
+@misc{xtrabackup,
+	title={Xtrabackup},
+	howpublished={\url{https://www.percona.com/software/mysql-database/
+	percona-xtrabackup.}}
+}
+@misc{Alibackupset,
+	title={Backup setquery},
+	howpublished={\url{https://www.alibabacloud.com/help/en/doc-detail/186041.html}}
+}
+@misc{AmazonEBSSnapshot,
+	title={Amazon EBS Snapshot},
+	howpublished={\url{https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSSnapshots.html}}
+}
+@misc{TPCC,
+	title={Transaction Processing Performance Council. 2010. TPC-C: Decision Support Benchmark.},
+	howpublished={\url{https://www.tpc.org/tpcc/}}
+}
+@misc{GoolgeCloudPDS,
+	title={Google Cloud Persistent Disk Snapshots},
+	howpublished={\url{https://cloud.google.com/compute/docs/disks/snapshots}}
+}
+@misc{Azurebackup,
+	title={Azure Backup},
+	howpublished={\url{https://learn.microsoft.com/en-us/azure/backup/backup-instant-restore-capability}}
+}
+@misc{polardb,
+	title={Polardb},
+	howpublished={\url{https://www.alibabacloud.com/product/polardb}}
+}
+@misc{AliyunRDS,
+	title={Aliyun RDS},
+	howpublished={\url{https://www.alibabacloud.com/help/en/apsaradb-for-rds}}
+}
+@misc{AnalyticDBMySQL,
+	title={AnalyticDB MySQL},
+	howpublished={\url{https://www.alibabacloud.com/product/analyticdb-for-mysql}}
+}
+
+@misc{MicrosoftAzureVirtualdisk,
+	title={Microsof tAzure VirtualDisk},
+	howpublished={\url{https://learn.microsoft.com/en-us/azure/virtual-machines/disks-incremental-snapshots?tabs=azure-cli}}
+}
+@misc{RackspaceCloudblockstorage,
+	title={Rackspace Cloud Block Storage},
+	howpublished={\url{https://docs.rackspace.com/support/how-to/prepare-your-cloud-block-storage-volume}}
+}
+@misc{rubirk,
+	title={Rubrit snapshot backup},
+	howpublished={\url{https://www.rubrik.com/insights/what-is-a-snapshot-backup}}
+}
+@misc{cohesity,
+	title={Cohesity backup-and-recovery},
+	howpublished={\url{https://www.rubrik.com/insights/what-is-a-snapshot-backup}}
+}
+
+@book{zhao2014cloud,
+	title={Cloud data management},
+	author={Zhao, Liang and Sakr, Sherif and Liu, Anna and Bouguettaya, Athman},
+	year={2014},
+	publisher={Springer}
+}
+
+
+
+@misc{snowflake,
+	title={snowflake},
+	howpublished={\url{https://www.snowflake.com/en/}}
+}
+
+@misc{Deltalake,
+	title={Delta Lake},
+	howpublished={\url{https://delta.io/}}
+}
+@article{rodeh2013btrfs,
+	title={BTRFS: The Linux B-tree filesystem},
+	author={Rodeh, Ohad and Bacik, Josef and Mason, Chris},
+	journal={ACM Transactions on Storage (TOS)},
+	volume={9},
+	number={3},
+	pages={1--32},
+	year={2013},
+	publisher={ACM New York, NY, USA}
+}
+@article{hasenstein2001logical,
+	title={The logical volume manager (LVM)},
+	author={Hasenstein, Michael},
+	journal={White paper},
+	year={2001}
+}
+@inproceedings{DBLP:conf/eurosys/MeyerACLFHW08,
+	author    = {Dutch T. Meyer and
+	Gitika Aggarwal and
+	Brendan Cully and
+	Geoffrey Lefebvre and
+	Michael J. Feeley and
+	Norman C. Hutchinson and
+	Andrew Warfield},
+	title     = {Parallax: virtual disks for virtual machines},
+	publisher = {{ACM}},
+	year      = {2008},
+	
+}
+@inproceedings{DBLP:conf/icpads/LiZCY14,
+	author    = {Jianxin Li and
+	Jingsheng Zheng and
+	Lei Cui and
+	Renyu Yang},
+	title     = {ConSnap: Taking continuous snapshots for running state protection
+	of virtual machines},
+	booktitle = {20th {IEEE} International Conference on Parallel and Distributed Systems,
+	{ICPADS} 2014, Hsinchu, Taiwan, December 16-19, 2014},
+	pages     = {677--684},
+	publisher = {{IEEE} Computer Society},
+	year      = {2014},
+}
+@article{nielsen1999use,
+	title={How to use a RAMdisk for Linux},
+	author={Nielsen, Mark},
+	journal={Linux Gazette (44)},
+	year={1999}
+}
+
+@inproceedings{factor2005object,
+	title={Object storage: The future building block for storage systems},
+	author={Factor, Michael and Meth, Kalman and Naor, Dalit and Rodeh, Ohad and Satran, Julian},
+	booktitle={2005 IEEE International Symposium on Mass Storage Systems and Technology},
+	pages={119--123},
+	year={2005},
+	organization={IEEE}
+}
+
+@inproceedings{merenstein2021cnsbench,
+	title={$\{$CNSBench$\}$: A Cloud Native Storage Benchmark},
+	author={Merenstein, Alex and Tarasov, Vasily and Anwar, Ali and Bhagwat, Deepavali and Lee, Julie and Rupprecht, Lukas and Skourtis, Dimitris and Yang, Yang and Zadok, Erez},
+	booktitle={19th USENIX Conference on File and Storage Technologies (FAST 21)},
+	pages={263--276},
+	year={2021}
+}
+
