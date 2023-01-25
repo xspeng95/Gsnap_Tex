@@ -246,11 +246,11 @@ For RoW, the updated data blocks are scattered while the unupdated data blocks p
 Snapshot recovery includes index and data block recovery, which are both stored in the remote storage system. The snapshot builds indexes and then loads data blocks. Index recovery includes loading  index from the remote node and locating the address of the data block locally. In RoW, index recovery needs to load more indexes because of the dependency, and the number of hops in locating is linearly related to the number of snapshots. Large index size increases recovery latency and memory overhead, which challenge network bandwidth and computing of the storage system. 
 Many works tend to build data block indexes \cite{yang2011st,joseph2019securing,pekerskaya2006mining} to accelerate the recovery process. They cache the mapping from data block numbers to physical block addresses, which accelerate locating data blocks. However, fragmentation inevitably becomes worse as the database transactions run. The recovery process is still affected by the number of snapshots. Amazon EBS snapshot \cite{AmazonEBSSnapshot} copies the complete index of the previous snapshot before updating data blocks to cut off the dependency. In the continuous access scenes, although the number of indexes to be loaded is reduced, the redundancy between indexes increases the local memory overhead.
 
-Based on the workload of the database and the snapshot access characters, we propose a simple but effective snapshot index structure to reduce index size, which balances recovery overhead and memory overhead. The snapshot dependence chain is divided into groups, with each index relying on the previous indexes in its group. 
-By sharing the subtrees in a group, the data block address could be obtained directly and then the index memory overhead is decreased. Besides, prefetching indexes in a group instead of all dependent snapshot indexes could significantly reduce the number of snapshots and the recovery time. But grouping snapshot seems to be a non-trivial challenge. First, how to cut off the dependency between snapshots and share subtrees in a group? Second, how to adjust the length of a group to adapt to the snapshot size and update frequency?
-
-We present the group-based snapshot index, called GSnap, to solve the issues above. GSnap has two key technologies, which are Shared-Subtrees Indexing (SSI) and
-Group-Based Dividing (GBD). SSI sets two types of indexes in a group. Specifically, The first snapshot index is a complete B+ tree, and the subsequent snapshots are partial. The complete tree no longer depends on the former indexes, while the partial tree nodes point to previous indexes in the group, effectively reducing redundancy.
+Based on the workload of the database and the snapshot access characters, we propose a simple but effective snapshot index structure, called GSnap, to balance recovery overhead and memory overhead. The snapshot dependency is divided into groups, with each index relying on the previous indexes in its group. 
+By sharing the subtrees in a group, the data block address could be obtained directly and the index memory overhead is decreased. Besides, prefetching indexes in a group instead of all dependent indexes could significantly reduce the number of snapshots and the recovery time. 
+But grouping snapshot seems to be a non-trivial challenge. First, how to cut off the dependency between snapshots and share subtrees in a group? Second, how to adjust the length of a group to adapt to the snapshot size and update frequency?
+GSnap has two key technologies, which are Shared-Subtrees Indexing (SSI) and Group-Based Dividing (GBD), to solve the issues above.
+SSI sets two types of indexes in a group. Specifically, The first snapshot index is a complete B+ tree, and the subsequent snapshots are partial. The complete tree no longer depends on the former indexes, while the partial tree nodes point to previous indexes in the group, effectively reducing redundancy.
 GBD divides the group according to the snapshot update ratio and the recent average continuous access length. The purpose is to make index size of group stable and efficient cache management.
 
 Subsequently, we implement GSnap, with SSI and GBD technologies.
@@ -272,32 +272,33 @@ The rest of this paper is organized as follows. Section \ref{Background} present
 
 \subsection{Cloud Block Storage}
 More and more tenants deploy applications and store data on the cloud now.
-Cloud Block Storage (CBS) \cite{zhou2018lea,jin2019reasoning,zhang2020osca} could provide large-volume storage devices for Elastic Compute Service. As shown in Figure \ref{fig:CBS}, CBS is made up of the client layer, data forwarding layer, and storage server layer. 
-The client layer presents tenants with the view of elastic and isolated logic block devices allocated according to the configuration and mounted to the client virtual machines. The block device is usually divided and striped into objects of the same size for storage and the object size can be configured in the storage server.
+Cloud Block Storage (CBS) \cite{zhou2018lea,jin2019reasoning,zhang2020osca} provides large-volume storage devices for Elastic Compute Service. As shown in Figure \ref{fig:CBS}, CBS is made up of the client layer, data forwarding layer, and storage server layer. 
+The client layer presents tenants with the view of elastic and isolated logic block devices allocated by the configuration and mounted to the client virtual machines. The block device is usually divided and striped into objects of the same size for storage and the object size can be configured in the storage server.
 The data forwarding layer maps data block physical location from the object number, and forwards I/O requests from the client to the storage server through a two-level hashing \cite{karger1997consistent,weil2006crush}, which spread replicas of an object to different nodes. Similarly, Openstack Swift \cite{ring} stores objects in partitions and transfer replicas of partitions to different regions by the ring, which is used to record the location information. 
 The storage cluster layer is responsible for providing physical storage and typically employs replications to ensure data reliability and availability. Therefore, compared with the local block devices, the requests of CBS to access the data block inevitably pass through three layers to the storage cluster.
 %	, and incur the overhead of additional address calculation and network transmission.
-%	Now Object Storage Service (OSS) \cite{factor2005object} is also used for cloud storage, but it mainly stores unstructured data, such as documents, images, videos.
+Now Object Storage Service (OSS) \cite{factor2005object} is also used for cloud storage, but it mainly stores unstructured data, such as documents, images, videos.
 \begin{figure}[t]
 	\centering
 	\includegraphics[width=8cm]{figures/ceph_pic/blockdevice.pdf}
 	\caption{Architecture of Cloud Block Storage}
 	\label{fig:CBS}
 \end{figure}
-
+%\vspace{-0.3cm}
 
 \subsection{Snapshot Implementations}
-There are many classic snapshot technologies, such as CoW, CoW with background copy (CoW+), Split Mirror Redundant Array of Independent Disks (SMRAID), Continuous Data Protection (CDP) \cite{garimella2006understanding}, and RoW. The different types of snapshot technologies have been extensively compared and analyzed \cite{mahipal2021virtual,joseph2019securing,almulla2013distributed,subramanian2014snapshots}. In summary, the write overhead of CoW, CoW+, and SMRAID are suffered by their methodologies, their derivative technologies induce overheads for regular I/O and dramatic increase of sync operations when snapshots are present \cite{subramanian2014snapshots,li2012irow}. CDP is mostly dependent on the underlying technology used for taking snapshots and network bandwidth.
-snapshot taken by the Google Cloud Compute Engine Persistent Disk \cite{GoolgeCloudPDS} only contains blocks that are different from the previous snapshot. Snapshots taken of the volume in Rackspace Cloud Block Storage \cite{RackspaceCloudblockstorage} and virtual disk in Microsoft Azure \cite{MicrosoftAzureVirtualdisk} are incremental snapshots.
+There are many classic snapshot technologies, such as CoW, CoW with background copy (CoW+), Split Mirror Redundant Array of Independent Disks (SMRAID), Continuous Data Protection (CDP) \cite{garimella2006understanding}, and RoW. The different types of snapshot technologies have been extensively analyzed \cite{mahipal2021virtual,joseph2019securing,almulla2013distributed,subramanian2014snapshots}. In summary, the write overhead of CoW, CoW+, and SMRAID are suffered by their methodologies, their derivative technologies induce overheads for regular I/O and dramatic increase of sync operations when snapshots are present \cite{subramanian2014snapshots,li2012irow}. CDP is mostly dependent on the underlying technology used for taking snapshots and network bandwidth.
+
 
 For RoW-based snapshots, new data blocks write to the blocks belonging to the current snapshot, which stores the root node of the previous snapshot index for all old data blocks.
 RoW sacrifices contiguity in the original copy for lower overhead updates in the presence of snapshots. 
 As the system runs and takes snapshots over a long time, the fragmentation of the data block becomes increasingly serious. When locating the data block, the snapshot checks whether it exists in the snapshot. If not, the snapshot  looks for the earlier snapshots by the root nodes until the data block is located. Thus the process inevitably increases the number of hops.
 Iterative search degrades performance due to the low update frequency of data blocks and the massive amount of snapshots.
+Snapshot taken by the Google Cloud Compute Engine Persistent Disk \cite{GoolgeCloudPDS} only contains blocks that are different from the previous snapshot. Snapshots taken of the volume in Rackspace Cloud Block Storage \cite{RackspaceCloudblockstorage} and virtual disk in Microsoft Azure \cite{MicrosoftAzureVirtualdisk} are incremental snapshots.
 Amazon EBS \cite{varia2014overview} has an optimized RoW snapshot index that cut off the index dependencies. It copies the entire previous snapshot index before updating the data blocks. Besides, the index uses a uniform region to store continuous unmodified data blocks to reduce the number of nodes.
 %	The region points to the last changed snapshot instead of the previous snapshot to avoid iterative queries.
 However, this index is not applicable in batch access mode since the indexes are loaded iteratively.
-Moreover, when the number of snapshots grows, the size of each region shrinks, and the number of regions grows, the index degenerates into a complete index, which increases memory consumption.
+Moreover, when the number of snapshots grows, the size of each region shrinks, and the number of regions grows, the index degenerates into a complete index, which increases memory overhead.
 
 \subsection{Vary Layers Supported Snapshot}
 \begin{table}[htbp]
@@ -341,7 +342,7 @@ Thus, the access behavior of snapshots is continuous. This behavior is proper fo
 %Finally, we observed that the number of snapshots accessed in the last week is 47$\%$ of the snapshots accessed in a month.
 %In a short, users typically access the most recent snapshots continuously.
 
-Existing RoW-based snapshot technologies suffer under continuous snapshot access workloads. The reason is that the dependency between snapshots leads to loading all snapshots with reference relationships into memory instead of only snapshots accessed. The Amazon EBS snapshot index is a complete tree that stores all region's addresses to eliminate the dependency. However, it causes significant pressure on memory consumption because all indexes in memory are complete trees.
+Existing RoW-based snapshot technologies suffer under continuous access workload. The reason is that the dependency between snapshots leads to loading all snapshots with reference relationships into memory instead of only snapshots accessed. The Amazon EBS snapshot index is a complete tree that stores all region's addresses to eliminate the dependency. However, it causes significant pressure on memory consumption because all indexes in memory are complete trees.
 
 %\begin{figure}[t]
 %	\centering
@@ -355,12 +356,14 @@ Existing RoW-based snapshot technologies suffer under continuous snapshot access
 	\begin{minipage}[t]{0.48\linewidth}
 		\includegraphics[width=\linewidth]{figures/ceph_pic/ali_counter_workload.pdf} 
 		\caption{Snapshot retained distribution} 
+		\vspace{-0.3cm}
 		\label{fig:retained_distribution}
 	\end{minipage}
 	\hfill%
 	\begin{minipage}[t]{0.48\linewidth}
 		\includegraphics[width=\linewidth]{figures/ceph_pic/ali_percentage_workload.pdf}
 		\caption{Snapshot accessed distribution}
+			\vspace{-0.3cm}
 		\label{fig:accessed_distribution}
 	\end{minipage} 
 \end{figure}
@@ -381,8 +384,10 @@ example.
 	\centering
 	\includegraphics[width=\columnwidth]{figures/ceph_pic/orig_RoW_and_OpRoW.pdf}
 	\caption{Example of unbounded traverses to restore snapshots on traditional versus optimized RoW index}
+		\vspace{-0.3cm}
 	\label{fig:row-index-vs}
 \end{figure}
+
 
 
 In traditional RoW, the root node points to the root node of the previous snapshot index, and new data blocks are written to the current snapshot. During the snapshot recovery phase, the recovery process requires access to other snapshots because the data blocks of the snapshot are scattered in other snapshots rather than only the current snapshot. The first step in locating an unmodified data block is to verify the destination snapshot, and then check the existence of the data block. As shown in Figure \ref{fig:row-index-vs}, there are \emph{Block A}, \emph{B} until to \emph{Z}. \emph{Block B} is updated in \emph{snapshot 1}, \emph{Block C} is updated in \emph{snapshot 2}. When restoring \emph{snapshot 1}, only \emph{snapshot 0} and \emph{snapshot 1} are verified. However, when restoring \emph{snapshot N}, the recovery process first checks \emph{Block A} in \emph{snapshot N-1} while \emph{Block A} is not updated in \emph{snapshot N-1}. The recovery process has to access previous snapshots iteratively until found in \emph{snapshot 1}. For \emph{Block B}, the same traversal path is required. The recovery latency is affected by the data block fragmentation and the number of snapshots.
@@ -410,9 +415,12 @@ The \emph{snapshot 2}, \emph{3} no longer need to store addresses of the unmodif
 \begin{figure*}[htp]
 	\centering
 	\includegraphics[width=16cm]{figures/ceph_pic/snaptree.pdf}
+	\vspace{-0.2cm}
 	\caption{SnapTree: \textbf{(a)} Create S1 snapshot. \textbf{(b)} Block No.12 data write. \textbf{(c)} Create S2 snapshot}
 	\label{fig:snaptree}
 \end{figure*}
+
+
 \begin{itemize}
 	\item \textbf{Shared-Subtree Indexing(SSI)}. The snapshot index is organized in the B+ tree structure and the leaf nodes store the addresses of the data blocks. SSI shares the internal and leaf nodes among the indexes. Hence, we only need to build and insert nodes when data blocks are modified to maintain that the path from the root node to the leaf node is complete, as detailed in Section \ref{SSI}.
 	\item \textbf{Group-Based Dividing(GBD)}. 
@@ -426,7 +434,7 @@ The cache loads snapshot indexes based on the access characteristics and adopts 
 The update delay and memory usage of the index are proportional to the number of data blocks, we set the block budget for the latter group based on the block consumption of the former group to reduce memory overhead.
 The snapshot group length is still rewarded by the the former group so that ensure the indexes of each group occupy a close memory size for stable snapshot recovery and simple memory management. Besides, as we know from the previous section that users access snapshots continuously, we tend to set the length of the group is equal to the recent average access length of snapshots. We analyze those factors in detail in the next section.
 
-
+\vspace{-0.3cm}
 \section{Design and Implementation}
 \label{Design}
 %	In this section, we dissect how SSI and GBD work to cut off the reference and determine the size of the group. In addition, we also theoretically analyzed the size of the group and cache management, and finally analyzed the snapshot deleting and group index merging.
@@ -511,12 +519,13 @@ As shown in Algorithm \ref{algorithm:dividing}, GSnap compares the block budget 
 	\centering
 	\includegraphics[width=\columnwidth]{figures/ceph_pic/group_divide.pdf}
 	\caption{An example of GSnap index division}
+	\vspace{-0.3cm}
 	\label{fig:snapshotgroup_devide}
 \end{figure}
-\vspace{-0.3cm}
+
 
 \subsection{Cache Management of GSnap}
-In this subsection, we introduce how the GSnap index guides access to the snapshot data block and cache management of the client host.
+In this subsection, we introduce how to access the data blocks and cache management of the client host.
 
 GSnap uses the shared memory to cache the snapshot index, which is appropriate for the interprocess communication. And the user could adjust the shared memory size to accommodate the snapshot size and access frequency by the profile.
 When mounting a block device, a daemon process is started in the system for data block locating and index cache management.
@@ -574,10 +583,11 @@ We use $Group\_Access\_Counter$ to count the number of accesses of the snapshot 
 	\caption{Cache management of GSnap index on client host}
 	\label{fig:cache_managment}
 \end{figure}
+\vspace{-0.3cm}
 
 \subsection{GSnap Recovery Model and Analysis}
 \label{section:Recovery model}
-In this subsection, we theoretically analyze and compare GSnap recovery with the traditional and optimized indexes, abbreviated as T-index and O-index, from two perspectives: the time cost of building an index and the memory overhead. We also determine the number of snapshots $S$ and the object budget $O$ based on the benefit.
+In this subsection, we theoretically analyze and compare GSnap with the traditional and optimized indexes, abbreviated as T-index and O-index, from two perspectives: the time cost of building an index and the memory overhead. We also determine the number of snapshots $S$ and the object budget $O$ based on the benefit.
 
 When recovering and cloning a snapshot, the system loads snapshot group and constructs the index in memory first. However, due to the sharing of subtrees, the prerequisite for the construction of the current snapshot tree is that all the subtrees in the group have been constructed.
 The dependence chain length of the group is a key factor for snapshot recovery, to avoid loading indexes that do not be accessed.
@@ -784,6 +794,7 @@ To understand the performance of GSnap under database workloads, we evaluate the
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.7\columnwidth]{figures/ceph_pic/eval_overview.pdf}
+	\vspace{-0.4cm}
 	\caption{Throughput }
 	\label{fig:databasethroughput}
 \end{figure}
@@ -798,8 +809,10 @@ In this subsection we discuss the impact of snapshot group length on snapshot re
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.6\columnwidth]{figures/ceph_pic/eval_grouplength.pdf}
+	\vspace{-0.4cm}
 	\caption{The benefit to restore a single snapshot group}
 	\label{fig:grouplength}
+	
 \end{figure}
 
 As shown in Figure \ref{fig:grouplength}, GSnap cuts off snapshot references and shares child nodes within the group, which makes its revenue higher than both T-index and O-index. Because of the snapshot dependency, T-index loads its dependent snapshot indexes when restoring the snapshot collection, and in fact, the memory usage of the group is related to the length of the dependency chain. The performance of O-index degrades as the length of the snapshot set increases, because each index is a complete snapshot tree. GSnap has the largest profit when the snapshot group length is 12, which is close to the optimal value in the theoretical analysis. As the snapshot length increases, the number of snapshots that need to be loaded and the index memory increase, resulting in lower benefits, but higher than other indexes.
@@ -812,9 +825,11 @@ We fix the length of snapshot group to 20 since the length of the snapshot group
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.6\columnwidth]{figures/ceph_pic/eval_point.pdf}
+	\vspace{-0.4cm}
 	\caption{The latency to restore a single snapshot}
 	\label{fig:snapshotpoint}
 \end{figure}
+
 
 The recovery snapshot interval is set to 10, the purpose is to prevent the recovery of a single snapshot from evolving into the recovery of a snapshot collection and the snapshots are recovered in order. As shown in Figure \ref{fig:snapshotpoint}, we set up to restore the snapshots sequentially, so the snapshot indexes that the latter restored snapshots depend on have been loaded into shared memory.  
 For GSnap, if the snapshot to be restored is already in the loaded group, the recovery latency is low, such as restoring the snapshots 20 and 40.
@@ -825,11 +840,12 @@ All indexes in the group are loaded when GSnap restores a single snapshot, while
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.7\columnwidth]{figures/ceph_pic/eval_sequence.pdf}
+	\vspace{-0.4cm}
 	\caption{The throughput to restore snapshot set}
 	\label{fig:snapshotlength}
 	
 \end{figure}
-\vspace{-0.3cm}
+\vspace{-0.2cm}
 
 We evaluate the delay of restoring snapshot sets of different lengths, to simulate continuous access to snapshots. We set all snapshot sets to randomly restore from the groups, and refresh the shared memory after each recovery operation to ensure the latency accuracy.
 As shown in Figure \ref{fig:snapshotlength}, compared with O-index, the speedup of GSnap is up to 79\%, because in the loaded snapshot indexes, only 2 indexes are complete snapshot trees, and the others are partial snapshot trees, which can effectively reduce the index size of the transfer process. 
@@ -843,6 +859,7 @@ Since CoW does not depend on previous snapshots, we only compare O-index, T-inde
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.7\columnwidth]{figures/ceph_pic/eval_delete.pdf}
+	\vspace{-0.4cm}
 	\caption{The latency to delete snapshot set}
 	\label{fig:delete}
 	\vspace{-0.4cm}
@@ -860,10 +877,12 @@ We create 10 groups and randomly load snapshot groups, T-index and O-index load 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.7\columnwidth]{figures/ceph_pic/eval_indexmemory.pdf}
+	\vspace{-0.4cm}
 	\caption{The index overhead of snapshot}
 	\label{fig:objectsize}
+	\vspace{-0.3cm}
 \end{figure}
-\vspace{-0.2cm}
+
 
 As shown in Figure \ref{fig:objectsize}, the index overhead of O-index exceeds that of GSnap, even though the number of the object decreases as the size increases. The reason is that O-index is the complete snapshot tree, whereas in Gsnap, only the first index within the group is a complete snapshot tree, and the remaining indexes are partial snapshot trees. the design of the group dilutes the average number of nodes. The index overhead of GSnap is only 8\% higher than that of T-index because the average indexing overhead is diluted by other partial indexes within the group.
 As the object size increases, the actual data write ratio decreases. The reason is that at the end of the snapshot, the system checks the coverage area of all objects and copies the default content from the previous objects to the current object.
@@ -917,7 +936,8 @@ We evaluate load delay reduction of 28.7 seconds for one group, which is the ben
 		\label{fig:merge_recovery}
 	\end{minipage} 
 \end{figure}
-\vspace{-0.2cm}
+
+\vspace{-0.4cm}
 
 \subsection{I/O Performance}
 
@@ -938,7 +958,9 @@ We evaluate load delay reduction of 28.7 seconds for one group, which is the ben
 	\vspace{-0.3cm}
 	\caption{The I/O performance for GSnap}
 	\label{fig:IO_performance}
+	\vspace{-0.2cm}
 \end{figure*}
+
 
 \label{IPerforamce}
 We also evaluate the I/O performance in the XFS and compare the throughput under various number of snapshot, highlighting the impact of indexes on locating data blocks. Specifically, the read/write ratio set as: read-only, balanced (50\% read / 50\% write) and write-only. the block size is default set to 4MB.
