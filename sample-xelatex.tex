@@ -258,39 +258,38 @@ recovery, which is called Cloud Data Management (CDM)
 
 Cloud native databases can fully take the advantages of cloud storage
 to provide hundreds of thousands snapshots. Part of the snapshots are
-stored in the Cloud Block Storage (CBS) whereas the rest snapshots are
-archived to the Cloud Object Storage (COS) to support more snapshots
-and reduce their cost. The snapshots in CBS can be instantly cloned
-and mounted while archived snapshots in COS normally need to be copied
-to CBS for recovery.  The snapshot could even be taken once every 10
-minutes in Google Cloud Persistent disk\cite{GoolgeCloudPDS}, and the
-number of snapshots per volume is up to 5000 in Rackspace Cloud Block
-Storage \cite{RackspaceCloudblockstorage}.  Cloud vendors support a
-single snapshot instantly restore and flashblack. For example, AWS EBS
-\cite{varia2014overview} provides Fast Snapshot Restore (FSR) to
-accelerate volume creation from the snapshot and eliminates the
-latency of I/O operations on a block when it is accessed for the first
-time. Azure Backup \cite{Azurebackup} improves restore performance
-with Instant Restore capability for VM snapshot. Moreover, PolarDB
-\cite{polardb} and Aliyun RDS \cite{AliyunRDS} provide similar instant
-recovery capacity and features like flashback.
+stored in the Cloud Block Storage (CBS) whereas the rest of snapshots
+are archived to the Cloud Object Storage (COS) to support more
+snapshots and reduce their cost. The snapshots in CBS can be instantly
+cloned and mounted while archived snapshots in COS normally need to be
+copied to CBS for recovery.  The snapshot could even be taken once
+every 10 minutes in Google Cloud Persistent disk\cite{GoolgeCloudPDS},
+and the number of snapshots per volume is up to 5000 in Rackspace
+Cloud Block Storage \cite{RackspaceCloudblockstorage}.  Cloud vendors
+support a single snapshot instantly restore and flashblack. For
+example, AWS EBS \cite{varia2014overview} provides Fast Snapshot
+Restore (FSR) to accelerate volume creation from the snapshot and
+eliminates the latency of I/O operations on a block when it is
+accessed for the first time. Azure Backup \cite{Azurebackup} improves
+restore performance with Instant Restore capability for VM
+snapshot. On Alibaba Cloud, PolarDB \cite{polardb} and RDS \cite{AliyunRDS}
+provide similar instant recovery capacity and features like flashback.
 
 
 Considerable number of snapshots leads to a new trend that databases
 always separate business and data track on multiple snapshots.  For
 example, MongoDB supports row-level query on the queryable snapshots,
 which are similar to the read-only MongoDB instances. Data warehouse
-such as Snowflake \cite{snowflake}, AnalyticDB MySQL
-\cite{AnalyticDBMySQL} and Delta Lake \cite{Deltalake} also provide
-time travel capability on continuous snapshots to access historical
-data at any point within a specified time period. Besides, the
-declarative extensions
+such as Snowflake \cite{snowflake}, AnalyticDB \cite{AnalyticDBMySQL}
+and Delta Lake \cite{Deltalake} also provide time travel capability on
+continuous snapshots to access historical data at any point within a
+specified time period. Besides, the declarative extensions
 \cite{tsikoudis2020rid,tsikoudis2018rql,shrira2005snap} to SQL are
 developed to specify and run multi-snapshot computations conveniently
 for auditing and other forms of fact checking.  The new trend has a
-continuous access feature instead of a single snapshot, and is
-similarly sensitive to instant recovery latency or even real-time
-query.
+continuous access feature instead of accessing just a single snapshot,
+and is similarly sensitive to instant recovery latency. Real-time
+queries also need to be supported.
 
 
 However, existing snapshot technologies do not meet the requirements.
