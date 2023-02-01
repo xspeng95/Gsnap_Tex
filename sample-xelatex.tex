@@ -302,13 +302,13 @@ write amplification because the data blocks are copied to the
 snapshot, then the new data is written to the data blocks on the
 device.  It is unacceptable for cloud providers that the write
 amplification problem severely degrades performance
-\cite{merenstein2021cnsbench}. Thus they prefer to Redirect-on-Write
-(RoW).  For RoW, the updated data blocks are scattered while the
-unupdated data blocks point to the previous snapshots. Restoring a
-snapshot requires access to several snapshots. Thus more additional
-snapshots need to be accessed if restore continuous snapshots, which
-increases the recovery latency and degrades the query performance of
-the snapshots.
+\cite{merenstein2021cnsbench}. Thus, an alternative strategy is
+Redirect-on-Write (RoW).  For RoW, the updated data blocks are
+scattered while the unupdated data blocks point to the previous
+snapshots. Restoring a snapshot requires access to several
+snapshots. Thus more additional snapshots need to be accessed if
+restore continuous snapshots, which increases the recovery latency and
+degrades the query performance of the snapshots.
 
 %The length of the snapshot set is determined by the query
 %date. Besides, they may combine multiple snapshot sets for
@@ -321,21 +321,23 @@ the remote node and locating the address of the data block locally. In
 RoW, index recovery needs to load more indexes because of the
 dependency, and the number of hops in locating is linearly related to
 the number of snapshots. Large index size increases recovery latency
-and memory overhead, which challenge network bandwidth and computing
-of the storage system.  Many works tend to build data block indexes
+and memory overhead, which may saturate network bandwidth and
+computing resource of the storage system.  Many works tend to build
+data block indexes
 \cite{yang2011st,joseph2019securing,pekerskaya2006mining} to
 accelerate the recovery process. They cache the mapping from data
 block numbers to physical block addresses, which accelerate locating
-data blocks. However, fragmentation inevitably becomes worse as the
-database transactions run. The recovery process is still affected by
-the number of snapshots. Amazon EBS snapshot \cite{AmazonEBSSnapshot}
-copies the complete index of the previous snapshot before updating
-data blocks to cut off the dependency. In the continuous access
-scenes, although the number of indexes to be loaded is reduced, the
-redundancy between indexes increases the local memory overhead.
+data blocks. However, fragmentation inevitably becomes worse as more
+database transactions have been executed. The recovery process is
+still affected by the number of snapshots. Amazon EBS snapshot
+\cite{AmazonEBSSnapshot} copies the complete index of the previous
+snapshot before updating data blocks to cut off the dependency. In the
+continuous access scenarios, although the number of indexes to be loaded
+is reduced, the redundancy between indexes increases the local memory
+overhead.
 
 Based on the workload of the database and the snapshot access
-characters, we propose a simple but effective snapshot index
+characteristics, we propose a simple but effective snapshot index
 structure, called GSnap, to balance recovery overhead and memory
 overhead. The snapshot dependency is divided into groups, with each
 index relying on the previous indexes in its group.  By sharing the
@@ -363,9 +365,8 @@ while we adjust the GSnap deletion according to the sparse snapshot
 deletion mechanism.  We integrated GSnap index into Ceph RBD that
 supports taking snapshots at scale and continuous recovering from any
 snapshot with low latency. We employ workloads derived from the
-standard TPC-C benchmark to evaluate the performance GSnap index.
-
-To sum up, we make the following contributions:
+standard TPC-C benchmark to evaluate the performance GSnap index. In
+summary,
 \begin{itemize}
 	\item We propose GSnap, a high-performance snapshot index that
           could directly locate data blocks and balance the overhead
